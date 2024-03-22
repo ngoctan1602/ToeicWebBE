@@ -27,4 +27,9 @@ public class Part {
 
     @OneToMany(mappedBy = "part")
     private Set<Question> questions;
+
+    @OneToMany(mappedBy = "part")
+    private Set<Paragraph> paragraphs;
+
+
 }

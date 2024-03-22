@@ -1,5 +1,6 @@
 package com.tantan.ToeicWeb.controller;
 
+import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.request.YearRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.YearResponse;
@@ -26,7 +27,7 @@ public class YearController {
                    new DataResponse(false,HttpStatus.OK.value(), "Get all year successfully",yearResponses)
            );
        }
-       throw new RuntimeException("Not found year");
+       throw new CustomException(new DataResponse(true,HttpStatus.NOT_FOUND.value(), "Not found year",null));
     }
     @PostMapping("/add")
     public ResponseEntity<DataResponse> addNewYear(@RequestBody YearRequest yearRequest)
