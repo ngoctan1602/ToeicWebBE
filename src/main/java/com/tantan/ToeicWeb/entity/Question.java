@@ -32,4 +32,7 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     private Set<Answer> answers;
+
+    @ManyToOne
+    private Paragraph paragraph;
 }

@@ -38,4 +38,7 @@ public class Test {
 
     @ManyToMany(mappedBy = "tests")
     private Set<Question> questions;
+
+    @ManyToMany(mappedBy = "tests")
+    private Set<Paragraph> paragraphs;
 }

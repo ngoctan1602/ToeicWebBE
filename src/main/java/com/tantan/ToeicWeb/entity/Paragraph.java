@@ -4,25 +4,29 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+import java.util.Set;
+
 @Entity
 @Table
-public class Answer {
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class Paragraph {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
     private String content;
-
-    @NonNull
-    private Boolean isTrue;
+    private String img;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @JoinColumn(name = "part_id")
+    private Part part;
+
+    @ManyToMany
+    private Set<Test> tests;
+
+    @OneToMany(mappedBy = "paragraph")
+    private Set<Question> questions;
 }
