@@ -58,7 +58,12 @@
 			<version>1.4.2.Final</version> <!-- Phiên bản tương ứng với mapstruct -->
 			<scope>provided</scope>
 		</dependency>
-
+		<!-- https://mvnrepository.com/artifact/com.cloudinary/cloudinary-http44 -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.31.0</version>
+		</dependency>
 
 	</dependencies>
 

@@ -30,7 +30,7 @@ public class YearController {
        throw new CustomException(new DataResponse(true,HttpStatus.NOT_FOUND.value(), "Not found year",null));
     }
     @PostMapping("/add")
-    public ResponseEntity<DataResponse> addNewYear(@RequestBody YearRequest yearRequest)
+    public ResponseEntity<DataResponse> addNewYear(@ModelAttribute YearRequest yearRequest)
     {
         if(iYearServices.addNewYear(yearRequest))
         {

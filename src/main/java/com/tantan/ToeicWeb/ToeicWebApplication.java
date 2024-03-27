@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ToeicWebApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ToeicWebApplication.class, args);
+		SpringApplication. run(ToeicWebApplication.class, args);
 	}
 
 }

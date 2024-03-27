@@ -25,10 +25,10 @@ public class Part {
     @ManyToMany
     private Set<Test> tests;
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part" ,fetch = FetchType.LAZY)
     private Set<Question> questions;
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part",fetch = FetchType.LAZY)
     private Set<Paragraph> paragraphs;
 
 
