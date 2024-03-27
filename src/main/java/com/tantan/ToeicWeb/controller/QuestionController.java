@@ -11,7 +11,7 @@ public class QuestionController {
     @Autowired
     private IQuestionServices iQuestionServices;
     @PostMapping("/add")
-    public boolean addNewQuestion (@RequestBody QuestionRequest questionRequest)
+    public boolean addNewQuestion (@ModelAttribute QuestionRequest questionRequest)
     {
        return iQuestionServices.addNewQuestion(questionRequest);
     }
