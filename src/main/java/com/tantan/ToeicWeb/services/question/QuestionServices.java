@@ -7,20 +7,22 @@ import com.tantan.ToeicWeb.entity.Question;
 import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.mapper.AnswerMapper;
 import com.tantan.ToeicWeb.mapper.QuestionMapper;
-import com.tantan.ToeicWeb.repository.AnswerRepository;
-import com.tantan.ToeicWeb.repository.ParagraphRepository;
-import com.tantan.ToeicWeb.repository.PartRepository;
-import com.tantan.ToeicWeb.repository.QuestionRepository;
+import com.tantan.ToeicWeb.repository.*;
 import com.tantan.ToeicWeb.request.AnswerRequest;
 import com.tantan.ToeicWeb.request.ParagraphRequest;
 import com.tantan.ToeicWeb.request.QuestionParagraphRequest;
 import com.tantan.ToeicWeb.request.QuestionRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
+import com.tantan.ToeicWeb.response.QuestionByPart;
 import com.tantan.ToeicWeb.services.image.ICloudServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class QuestionServices implements IQuestionServices {
@@ -36,7 +38,8 @@ public class QuestionServices implements IQuestionServices {
     @Autowired
     private ICloudServices iCloudServices;
 
-
+    @Autowired
+    private QuestionByPartRepository questionByPartRepository;
     @Override
     @Transactional
     public boolean addNewQuestion(QuestionRequest questionRequest) {
@@ -116,6 +119,7 @@ public class QuestionServices implements IQuestionServices {
         for(QuestionParagraphRequest questionRequest: paragraphRequest.getQuestionParagraphRequests())
         {
             Question question = new Question();
+            question.setPart(part);
             question.setParagraph(newPara);
             question.setContent(questionRequest.getContentQues());
             question.setDescription(questionRequest.getDescriptionQues());
@@ -129,5 +133,10 @@ public class QuestionServices implements IQuestionServices {
             }
         }
         return true;
+    }
+    @Override
+    public List<QuestionByPart> getQuestionByPart(Long idPart) {
+        List<QuestionByPart> questionByPartSet = questionByPartRepository.findByPartId(idPart);
+        return questionByPartSet;
     }
 }
