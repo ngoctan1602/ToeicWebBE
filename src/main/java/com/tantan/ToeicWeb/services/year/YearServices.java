@@ -32,6 +32,11 @@ public class YearServices implements IYearServices {
     }
 
     @Override
+    public List<YearResponse> getYearByIdPart(Long id) {
+        return null;
+    }
+
+    @Override
     public boolean addNewYear(YearRequest yearRequest) {
         Year year = new Year();
         year.setYear(yearRequest.getYear());

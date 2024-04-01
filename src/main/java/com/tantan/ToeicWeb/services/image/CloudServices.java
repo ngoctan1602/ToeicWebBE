@@ -44,8 +44,6 @@ public class CloudServices implements ICloudServices {
                 return cloudinary.url().secure(true).generate(publicId);
             }
             return null;
-
-
         } catch (IOException e) {
             e.printStackTrace();
             return null;
