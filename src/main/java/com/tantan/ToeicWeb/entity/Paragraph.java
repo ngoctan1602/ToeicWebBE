@@ -19,6 +19,7 @@ public class Paragraph {
 
     private String content;
     private String img;
+    private String audio;
 
     @ManyToOne
     @JoinColumn(name = "part_id")
