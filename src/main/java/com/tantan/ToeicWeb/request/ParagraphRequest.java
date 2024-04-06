@@ -13,6 +13,7 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class ParagraphRequest {
     private Long idPart;
+    private Long idType;
     private String content;
     private ArrayList<QuestionParagraphRequest> questionParagraphRequests;
     @Nullable

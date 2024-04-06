@@ -33,6 +33,6 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private Set<Answer> answers;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Paragraph paragraph;
 }
