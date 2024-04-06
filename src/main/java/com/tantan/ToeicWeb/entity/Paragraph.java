@@ -30,4 +30,8 @@ public class Paragraph {
 
     @OneToMany(mappedBy = "paragraph")
     private Set<Question> questions;
+
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private TypeParagraph typeParagraph;
 }

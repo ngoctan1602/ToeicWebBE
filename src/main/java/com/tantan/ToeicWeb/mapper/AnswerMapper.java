@@ -15,5 +15,4 @@ public interface AnswerMapper {
     @Mapping(source = "isTrue", target = "isTrue")
     Answer toEntity(AnswerRequest answerRequest);
 
-
 }

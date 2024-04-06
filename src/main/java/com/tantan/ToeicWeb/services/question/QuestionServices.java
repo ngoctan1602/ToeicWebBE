@@ -1,9 +1,6 @@
 package com.tantan.ToeicWeb.services.question;
 
-import com.tantan.ToeicWeb.entity.Answer;
-import com.tantan.ToeicWeb.entity.Paragraph;
-import com.tantan.ToeicWeb.entity.Part;
-import com.tantan.ToeicWeb.entity.Question;
+import com.tantan.ToeicWeb.entity.*;
 import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.mapper.AnswerMapper;
 import com.tantan.ToeicWeb.mapper.QuestionMapper;
@@ -37,21 +34,15 @@ public class QuestionServices implements IQuestionServices {
     private PartRepository partRepository;
     @Autowired
     private ICloudServices iCloudServices;
+    @Autowired
+    private TypeParagraphRepository typeParagraphRepository;
 
     @Autowired
     private QuestionByPartRepository questionByPartRepository;
+
     @Override
     @Transactional
     public boolean addNewQuestion(QuestionRequest questionRequest) {
-
-        //Create Paragraph
-//        Long partId = questionRequest.getParagraphRequest().getIdPart();
-//        Paragraph paragraph = ParagraphMapper.INSTANCE.toEntity(questionRequest.getParagraphRequest());
-//        if (partRepository.existsById(partId)) {
-//            paragraph.setPart(partRepository.findById(partId).orElse(null));
-//        }
-//        Paragraph paragraphCreated = paragraphRepository.save(paragraph);
-
 
         // Tạo câu hỏi thuộc part lẻ như 1, 2, 5
         System.out.println(questionRequest);
@@ -66,12 +57,10 @@ public class QuestionServices implements IQuestionServices {
         Question question = QuestionMapper.INSTANCE.toEntity(questionRequest);
         String urlAudio = iCloudServices.uploadFileImage(questionRequest.getAudioQues(), "video", "video");
         String urlImage = iCloudServices.uploadFileImage(questionRequest.getImageQues(), "image", "image");
-        if(urlAudio != null)
-        {
+        if (urlAudio != null) {
             question.setAudio(urlAudio);
         }
-        if(urlImage != null)
-        {
+        if (urlImage != null) {
             question.setImage(urlImage);
         }
         question.setPart(part);
@@ -83,7 +72,6 @@ public class QuestionServices implements IQuestionServices {
             System.out.println(answer);
             answerRepository.save(answer);
         }
-
         return true;
     }
 
@@ -95,37 +83,38 @@ public class QuestionServices implements IQuestionServices {
         // Thêm mới paragraph
         Long partId = paragraphRequest.getIdPart();
         Part part = partRepository.findById(partId).orElse(null);
-        if(part==null)
-        {
-            throw new CustomException(new DataResponse(false,HttpStatus.NOT_FOUND.value(),"Not found part",null));
+
+        if (part == null) {
+            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found part", null));
         }
+        Long typeId = paragraphRequest.getIdType();
+        TypeParagraph typeParagraph = typeParagraphRepository.findById(typeId).orElse(null);
         Paragraph paragraph = new Paragraph();
+        if (typeParagraph != null) {
+            paragraph.setTypeParagraph(typeParagraph);
+        }
         paragraph.setPart(part);
         paragraph.setContent(paragraphRequest.getContent());
         String urlAudio = iCloudServices.uploadFileImage(paragraphRequest.getAudio(), "video", "video");
         String urlImage = iCloudServices.uploadFileImage(paragraphRequest.getImage(), "image", "image");
-        if(urlAudio != null)
-        {
+        if (urlAudio != null) {
             paragraph.setAudio(urlAudio);
         }
-        if(urlImage != null)
-        {
+        if (urlImage != null) {
             paragraph.setImg(urlImage);
         }
 
         Paragraph newPara = paragraphRepository.save(paragraph);
 
         //Thêm danh sách câu hỏi
-        for(QuestionParagraphRequest questionRequest: paragraphRequest.getQuestionParagraphRequests())
-        {
+        for (QuestionParagraphRequest questionRequest : paragraphRequest.getQuestionParagraphRequests()) {
             Question question = new Question();
             question.setPart(part);
             question.setParagraph(newPara);
             question.setContent(questionRequest.getContentQues());
             question.setDescription(questionRequest.getDescriptionQues());
             Question newQues = questionRepository.save(question);
-            for (AnswerRequest answerRequest: questionRequest.getAnswerRequests())
-            {
+            for (AnswerRequest answerRequest : questionRequest.getAnswerRequests()) {
                 Answer answer = AnswerMapper.INSTANCE.toEntity(answerRequest);
                 answer.setQuestion(newQues);
 //                System.out.println(answer);
@@ -134,9 +123,17 @@ public class QuestionServices implements IQuestionServices {
         }
         return true;
     }
+
     @Override
     public List<QuestionByPart> getQuestionByPart(Long idPart) {
         List<QuestionByPart> questionByPartSet = questionByPartRepository.findByPartId(idPart);
         return questionByPartSet;
+    }
+
+    @Override
+    public List<Question> getQuestionByParagraph(Paragraph paragraph) {
+        List<Question> questions = questionRepository.findByParagraph(paragraph);
+        System.out.println(questions);
+        return questions;
     }
 }

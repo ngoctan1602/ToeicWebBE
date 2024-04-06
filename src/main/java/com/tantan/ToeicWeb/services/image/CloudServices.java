@@ -36,12 +36,13 @@ public class CloudServices implements ICloudServices {
     public String uploadFileImage(MultipartFile multipartFile, String folderName, String type) {
         try {
             HashMap<Object, Object> options = new HashMap<>();
-            options.put("folder", folderName);
+            options.put("folder",folderName);
             options.put("resource_type", type);
             if (multipartFile != null) {
                 Map<?, ?> uploadedFile = cloudinary.uploader().upload(multipartFile.getBytes(), options);
-                String publicId = (String) uploadedFile.get("public_id");
-                return cloudinary.url().secure(true).generate(publicId);
+//                String publicId = (String) uploadedFile.get("public_id");
+               return (String) uploadedFile.get("secure_url");
+//                return cloudinary.url().secure(true).generate(publicId);
             }
             return null;
         } catch (IOException e) {
