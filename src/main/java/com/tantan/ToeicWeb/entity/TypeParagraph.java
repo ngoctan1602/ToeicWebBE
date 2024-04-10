@@ -1,23 +1,23 @@
 package com.tantan.ToeicWeb.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class TypeParagraph {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @OneToMany(mappedBy = "typeParagraph")
-    private Set<Paragraph> paragraphs;
+    private Set<Paragraph> paragraphs = new HashSet<>();
 
 }

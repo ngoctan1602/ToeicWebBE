@@ -1,16 +1,18 @@
 package com.tantan.ToeicWeb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Part {
@@ -22,14 +24,15 @@ public class Part {
     @NonNull
     private int totalQuestion;
 
-    @ManyToMany
-    private Set<Test> tests;
+    @ManyToMany(mappedBy = "parts")
+    @JsonIgnore
+    private List<Test> tests = new ArrayList<>();
 
     @OneToMany(mappedBy = "part" ,fetch = FetchType.LAZY)
-    private Set<Question> questions;
+    private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "part",fetch = FetchType.LAZY)
-    private Set<Paragraph> paragraphs;
+    private Set<Paragraph> paragraphs = new HashSet<>();
 
 
 }
