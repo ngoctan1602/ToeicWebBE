@@ -5,10 +5,7 @@ import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.mapper.AnswerMapper;
 import com.tantan.ToeicWeb.mapper.QuestionMapper;
 import com.tantan.ToeicWeb.repository.*;
-import com.tantan.ToeicWeb.request.AnswerRequest;
-import com.tantan.ToeicWeb.request.ParagraphRequest;
-import com.tantan.ToeicWeb.request.QuestionParagraphRequest;
-import com.tantan.ToeicWeb.request.QuestionRequest;
+import com.tantan.ToeicWeb.request.*;
 import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.QuestionByPart;
 import com.tantan.ToeicWeb.services.image.ICloudServices;
@@ -39,6 +36,9 @@ public class QuestionServices implements IQuestionServices {
 
     @Autowired
     private QuestionByPartRepository questionByPartRepository;
+
+    @Autowired
+    private TestRepository testRepository;
 
     @Override
     @Transactional
@@ -139,5 +139,20 @@ public class QuestionServices implements IQuestionServices {
         List<Question> questions = questionRepository.findByParagraph(paragraph);
         System.out.println(questions);
         return questions;
+    }
+
+    @Override
+    public List<Question> getQuestionByTestAndPart(QuestionByTestRequest question) {
+        Test test = testRepository.findById(question.getIdPart()).orElse(null);
+        if (test==null)
+        {
+            throw new CustomException( new DataResponse(false,HttpStatus.NOT_FOUND.value(),"Not found test with id = "+ question.getIdTest(),null));
+        }
+        Part part = partRepository.findById(question.getIdPart()).orElse(null);
+        if (part==null)
+        {
+            throw new CustomException( new DataResponse(false,HttpStatus.NOT_FOUND.value(),"Not found year with id = "+ question.getIdPart(),null));
+        }
+        return questionRepository.findByTestAndPart(test,part);
     }
 }
