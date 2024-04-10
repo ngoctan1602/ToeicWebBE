@@ -1,17 +1,20 @@
 package com.tantan.ToeicWeb.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class Paragraph {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +28,12 @@ public class Paragraph {
     @JoinColumn(name = "part_id")
     private Part part;
 
-    @ManyToMany
-    private Set<Test> tests;
+    @ManyToMany(mappedBy = "paragraphs")
+    @JsonIgnore
+    private List<Test> tests = new ArrayList<>();
 
     @OneToMany(mappedBy = "paragraph")
-    private Set<Question> questions;
+    private Set<Question> questions = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "type_id")

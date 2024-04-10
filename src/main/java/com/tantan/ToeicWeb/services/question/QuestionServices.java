@@ -88,10 +88,14 @@ public class QuestionServices implements IQuestionServices {
             throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found part", null));
         }
         Long typeId = paragraphRequest.getIdType();
-        TypeParagraph typeParagraph = typeParagraphRepository.findById(typeId).orElse(null);
         Paragraph paragraph = new Paragraph();
-        if (typeParagraph != null) {
-            paragraph.setTypeParagraph(typeParagraph);
+
+        if(typeId!=null)
+        {
+            TypeParagraph typeParagraph = typeParagraphRepository.findById(typeId).orElse(null);
+            if (typeParagraph != null) {
+                paragraph.setTypeParagraph(typeParagraph);
+            }
         }
         paragraph.setPart(part);
         paragraph.setContent(paragraphRequest.getContent());

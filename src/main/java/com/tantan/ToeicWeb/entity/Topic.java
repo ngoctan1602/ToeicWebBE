@@ -1,14 +1,13 @@
 package com.tantan.ToeicWeb.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,8 +21,8 @@ public class Topic {
     private String description;
 
     @ManyToMany(mappedBy = "topics")
-    private Set<Year> years;
+    private Set<Year> years = new HashSet<>();
 
     @OneToMany(mappedBy = "topic")
-    private Set<Test> tests;
+    private Set<Test> tests = new HashSet<>();
 }
