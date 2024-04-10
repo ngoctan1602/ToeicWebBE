@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionRequest {
+public class  QuestionRequest {
     private Long idPart;
 //    private ParagraphRequest paragraphRequest;
     private String contentQues;

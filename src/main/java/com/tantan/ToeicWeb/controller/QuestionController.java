@@ -2,6 +2,7 @@ package com.tantan.ToeicWeb.controller;
 
 import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.request.ParagraphRequest;
+import com.tantan.ToeicWeb.request.QuestionByTestRequest;
 import com.tantan.ToeicWeb.request.QuestionRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.ParagraphResponse;
@@ -64,6 +65,19 @@ public class QuestionController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is "+ idPart +" and Type id is" + idType, null)
+        );
+    }
+
+    @GetMapping("/test/part")
+    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestBody QuestionByTestRequest question) {
+//        List<ParagraphResponse> paragraphResponses = iParagraphServices.getAllQuestionByPartAndType(idPart,idType);
+//        if (!paragraphResponses.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", paragraphResponses)
+//            );
+//        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
         );
     }
 }
