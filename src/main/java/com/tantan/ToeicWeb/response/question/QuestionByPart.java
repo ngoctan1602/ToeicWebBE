@@ -1,4 +1,4 @@
-package com.tantan.ToeicWeb.response;
+package com.tantan.ToeicWeb.response.question;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

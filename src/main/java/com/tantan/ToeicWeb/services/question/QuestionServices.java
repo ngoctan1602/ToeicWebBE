@@ -7,7 +7,10 @@ import com.tantan.ToeicWeb.mapper.QuestionMapper;
 import com.tantan.ToeicWeb.repository.*;
 import com.tantan.ToeicWeb.request.*;
 import com.tantan.ToeicWeb.response.DataResponse;
-import com.tantan.ToeicWeb.response.QuestionByPart;
+import com.tantan.ToeicWeb.response.answer.AnswerResponse;
+import com.tantan.ToeicWeb.response.question.QuestionByPart;
+import com.tantan.ToeicWeb.response.question.QuestionDTO;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
 import com.tantan.ToeicWeb.services.image.ICloudServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,8 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionServices implements IQuestionServices {
@@ -90,8 +95,7 @@ public class QuestionServices implements IQuestionServices {
         Long typeId = paragraphRequest.getIdType();
         Paragraph paragraph = new Paragraph();
 
-        if(typeId!=null)
-        {
+        if (typeId != null) {
             TypeParagraph typeParagraph = typeParagraphRepository.findById(typeId).orElse(null);
             if (typeParagraph != null) {
                 paragraph.setTypeParagraph(typeParagraph);
@@ -142,17 +146,44 @@ public class QuestionServices implements IQuestionServices {
     }
 
     @Override
-    public List<Question> getQuestionByTestAndPart(QuestionByTestRequest question) {
-        Test test = testRepository.findById(question.getIdPart()).orElse(null);
-        if (test==null)
-        {
-            throw new CustomException( new DataResponse(false,HttpStatus.NOT_FOUND.value(),"Not found test with id = "+ question.getIdTest(),null));
+    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question) {
+        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(question.getIdPart(), question.getIdPart());
+        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
+        for (QuestionDTO questionDTO : questionDTOS) {
+//            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
+//                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
+            List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
+            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO,answerResponses);
+            questionWithAnswers.add(questionWithAnswer);
         }
-        Part part = partRepository.findById(question.getIdPart()).orElse(null);
-        if (part==null)
-        {
-            throw new CustomException( new DataResponse(false,HttpStatus.NOT_FOUND.value(),"Not found year with id = "+ question.getIdPart(),null));
-        }
-        return questionRepository.findByTestAndPart(test,part);
+        return questionWithAnswers;
     }
+
+//    @Override
+//    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest questionRequest) {
+//        Test test = testRepository.findById(questionRequest.getIdPart()).orElse(null);
+//        if (test == null) {
+//            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with id = " + questionRequest.getIdTest(), null));
+//        }
+//        Part part = partRepository.findById(questionRequest.getIdPart()).orElse(null);
+//        if (part == null) {
+//            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found year with id = " + questionRequest.getIdPart(), null));
+//        }
+//        List<Question> questions =questionRepository.findByTestAndPart(test, part);
+//        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
+//        for (Question question: questions)
+//        {
+//            QuestionWithAnswer questionWithAnswer = QuestionMapper.INSTANCE.toQuestionWithAnswer(question);
+//
+//            List<AnswerResponse> answerResponse = new ArrayList<>();
+//            for (Answer question1 : question.getAnswers()) {
+//                AnswerResponse response = AnswerMapper.INSTANCE.toAnswerResponse(question1);
+//                answerResponse.add(response);
+//            }
+//            questionWithAnswer.setAnswerList(answerResponse);
+//            questionWithAnswers.add(questionWithAnswer);
+//        }
+//
+//        return questionWithAnswers;
+//    }
 }

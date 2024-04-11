@@ -1,4 +1,4 @@
-package com.tantan.ToeicWeb.response;
+package com.tantan.ToeicWeb.response.question;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

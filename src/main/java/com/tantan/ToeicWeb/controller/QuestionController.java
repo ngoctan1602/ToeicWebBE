@@ -1,13 +1,12 @@
 package com.tantan.ToeicWeb.controller;
 
-import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.request.ParagraphRequest;
 import com.tantan.ToeicWeb.request.QuestionByTestRequest;
 import com.tantan.ToeicWeb.request.QuestionRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.ParagraphResponse;
-import com.tantan.ToeicWeb.response.QuestionByPart;
-import com.tantan.ToeicWeb.response.QuestionNoneAnswerResponse;
+import com.tantan.ToeicWeb.response.question.QuestionByPart;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
 import com.tantan.ToeicWeb.services.paragraph.IParagraphServices;
 import com.tantan.ToeicWeb.services.question.IQuestionServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/auth/question")
@@ -70,12 +70,12 @@ public class QuestionController {
 
     @GetMapping("/test/part")
     public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestBody QuestionByTestRequest question) {
-//        List<ParagraphResponse> paragraphResponses = iParagraphServices.getAllQuestionByPartAndType(idPart,idType);
-//        if (!paragraphResponses.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", paragraphResponses)
-//            );
-//        }
+        Set<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(question);
+        if (questionWithAnswers !=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", questionWithAnswers)
+            );
+        }
         return ResponseEntity.status(HttpStatus.OK).body(
                 new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
         );
