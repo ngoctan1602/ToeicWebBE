@@ -1,14 +1,12 @@
 package com.tantan.ToeicWeb.mapper;
 
-import com.tantan.ToeicWeb.entity.Paragraph;
 import com.tantan.ToeicWeb.entity.Question;
 import com.tantan.ToeicWeb.request.QuestionRequest;
-import com.tantan.ToeicWeb.response.QuestionNoneAnswerResponse;
-import org.mapstruct.InheritInverseConfiguration;
+import com.tantan.ToeicWeb.response.question.QuestionNoneAnswerResponse;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import org.springframework.context.annotation.Bean;
 
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
@@ -21,5 +19,11 @@ public interface QuestionMapper {
     @Mapping(source = "content",target = "content")
     @Mapping(source = "id",target = "id")
     QuestionNoneAnswerResponse toQuestionResponse(Question question);
+
+//    @Mapping(source = "content",target = "content")
+//    @Mapping(source = "id",target = "id")
+//    @Mapping(source = "description",target = "description")
+//    QuestionWithAnswer toQuestionWithAnswer(Question question);
+
 
 }

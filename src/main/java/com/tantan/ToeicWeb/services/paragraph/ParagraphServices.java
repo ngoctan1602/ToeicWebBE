@@ -2,7 +2,6 @@ package com.tantan.ToeicWeb.services.paragraph;
 
 import com.tantan.ToeicWeb.entity.Paragraph;
 import com.tantan.ToeicWeb.entity.Part;
-import com.tantan.ToeicWeb.entity.Question;
 import com.tantan.ToeicWeb.entity.TypeParagraph;
 import com.tantan.ToeicWeb.mapper.ParagraphMapper;
 import com.tantan.ToeicWeb.mapper.QuestionMapper;
@@ -10,15 +9,13 @@ import com.tantan.ToeicWeb.repository.ParagraphRepository;
 import com.tantan.ToeicWeb.repository.PartRepository;
 import com.tantan.ToeicWeb.repository.QuestionRepository;
 import com.tantan.ToeicWeb.repository.TypeParagraphRepository;
-import com.tantan.ToeicWeb.response.ParagraphByPartResponse;
 import com.tantan.ToeicWeb.response.ParagraphResponse;
-import com.tantan.ToeicWeb.response.QuestionNoneAnswerResponse;
+import com.tantan.ToeicWeb.response.question.QuestionNoneAnswerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ParagraphServices implements IParagraphServices{
