@@ -1,5 +1,6 @@
 package com.tantan.ToeicWeb.controller;
 
+
 import com.tantan.ToeicWeb.entity.Test;
 import com.tantan.ToeicWeb.request.TestRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
@@ -8,6 +9,7 @@ import com.tantan.ToeicWeb.services.test.ITestServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,10 +29,9 @@ public class TestController {
     @GetMapping("/topic")
     public ResponseEntity<DataResponse> getTestByTopic(@RequestParam Long idTopic) {
         List<TestResponse> testResponses = iTestServices.getTestByTopic(idTopic);
-        if (testResponses.isEmpty())
-        {
+        if (testResponses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with idTopic = "+idTopic, null)
+                    new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with idTopic = " + idTopic, null)
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -38,13 +39,13 @@ public class TestController {
         );
     }
 
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/topic/year")
-    public ResponseEntity<DataResponse> getTestByTopicAndYear(@RequestParam Long idTopic,@RequestParam Long idYear) {
-        List<TestResponse> testResponses = iTestServices.getTestByTopicAndYear(idTopic,idYear);
-        if (testResponses.isEmpty())
-        {
+    public ResponseEntity<DataResponse> getTestByTopicAndYear(@RequestParam Long idTopic, @RequestParam Long idYear) {
+        List<TestResponse> testResponses = iTestServices.getTestByTopicAndYear(idTopic, idYear);
+        if (testResponses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with idTopic = "+idTopic + " and idYear = "+idYear, null)
+                    new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with idTopic = " + idTopic + " and idYear = " + idYear, null)
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
