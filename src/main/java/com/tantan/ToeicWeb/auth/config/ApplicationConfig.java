@@ -1,13 +1,12 @@
 package com.tantan.ToeicWeb.auth.config;
 
-import com.tantan.ToeicWeb.auth.repository.UserRepository;
+import com.tantan.ToeicWeb.auth.repository.AccountRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,16 +14,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class ApplicationConfig {
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
-    public ApplicationConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ApplicationConfig(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
     }
     @Bean
     public UserDetailsService userDetailsService()
     {
-        return username -> userRepository.findByEmail(username).orElseThrow(
-                ()-> new UsernameNotFoundException("User not found with email" + username)
+        return username -> accountRepository.findByEmail(username).orElseThrow(
+                ()-> new UsernameNotFoundException("Account not found with email" + username)
         );
     }
     @Bean

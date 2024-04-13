@@ -65,7 +65,7 @@ public class JWTServices {
                 .compact();
     }
 
-    // if token is valid by checking if token is expired for current user
+    // if token is valid by checking if token is expired for current account
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
