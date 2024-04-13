@@ -1,5 +1,6 @@
 package com.tantan.ToeicWeb.auth.entities;
 
+import com.tantan.ToeicWeb.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,20 +14,20 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "account")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class User implements UserDetails {
+public class Account implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
-    @NotBlank(message = "The name field can't be blank")
-    private String name;
-    @NotBlank(message = "The username field can't be blank")
-    @Column(unique = true)
-    private String username;
+    private Long accountId;
+//    @NotBlank(message = "The name field can't be blank")
+//    private String name;
+//    @NotBlank(message = "The username field can't be blank")
+//    @Column(unique = true)
+//    private String username;
     @Column(unique = true)
     @Email(message = "Please input email proper format")
     @NotBlank(message = "The name email can't be blank")
@@ -37,8 +38,10 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "account")
     private RefreshToken refreshToken;
+    @OneToOne
+    private User user;
 
 
     @Override
