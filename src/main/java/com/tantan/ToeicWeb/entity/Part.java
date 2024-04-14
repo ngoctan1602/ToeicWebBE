@@ -1,6 +1,7 @@
 package com.tantan.ToeicWeb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tantan.ToeicWeb.entity.history.History;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,6 @@ public class Part {
 
     @OneToMany(mappedBy = "part",fetch = FetchType.LAZY)
     private Set<Paragraph> paragraphs = new HashSet<>();
-
-
+    @ManyToMany(mappedBy = "parts")
+    private List<History> histories = new ArrayList<>();
 }

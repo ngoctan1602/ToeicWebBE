@@ -1,7 +1,12 @@
 package com.tantan.ToeicWeb.entity;
 
+
+import com.tantan.ToeicWeb.entity.history.SelectedList;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,4 +28,7 @@ public class Answer {
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
+
+    @OneToMany(mappedBy = "answer")
+    private List<SelectedList> selectedList;
 }

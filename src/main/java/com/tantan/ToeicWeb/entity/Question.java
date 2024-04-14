@@ -1,6 +1,7 @@
 package com.tantan.ToeicWeb.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tantan.ToeicWeb.entity.history.SelectedList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,4 +39,7 @@ public class Question {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Paragraph paragraph;
+
+    @OneToMany(mappedBy = "question")
+    private List<SelectedList> selectedList;
 }
