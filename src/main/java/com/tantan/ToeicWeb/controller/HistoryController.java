@@ -3,14 +3,14 @@ package com.tantan.ToeicWeb.controller;
 import com.tantan.ToeicWeb.exception.CustomException;
 import com.tantan.ToeicWeb.request.history.HistoryRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
+import com.tantan.ToeicWeb.response.history.HistoryResponse;
 import com.tantan.ToeicWeb.services.history.IHistoryServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/history")
@@ -33,5 +33,21 @@ public class HistoryController {
             );
         }
         throw new CustomException(new DataResponse(true, HttpStatus.INTERNAL_SERVER_ERROR.value(), "Have error when create history",null));
+    }
+
+    @GetMapping("/test")
+    @PreAuthorize("hasAuthority('USER')")
+    public  ResponseEntity<DataResponse> getHistoryWithTestAndUser(@RequestParam Long idTest)
+    {
+        List<HistoryResponse> history =  iHistoryServices.getHistoryWithTestAndUser(idTest);
+        if (!history.isEmpty())
+        {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new DataResponse(false, HttpStatus.OK.value(), "Get history with test and user", history)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new DataResponse(false, HttpStatus.OK.value(), "Not found history ", null)
+        );
     }
 }

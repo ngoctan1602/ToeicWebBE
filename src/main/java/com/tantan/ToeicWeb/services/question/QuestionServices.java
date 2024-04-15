@@ -147,7 +147,7 @@ public class QuestionServices implements IQuestionServices {
 
     @Override
     public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question) {
-        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(question.getIdPart(), question.getIdPart());
+        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(question.getIdPart(), question.getIdTest());
         Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
         for (QuestionDTO questionDTO : questionDTOS) {
 //            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())

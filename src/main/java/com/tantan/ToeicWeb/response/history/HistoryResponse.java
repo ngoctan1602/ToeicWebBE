@@ -1,23 +1,24 @@
-package com.tantan.ToeicWeb.request.history;
+package com.tantan.ToeicWeb.response.history;
 
+import com.tantan.ToeicWeb.response.PartResponse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class HistoryRequest {
+@Setter
+public class HistoryResponse {
+    private Long id;
+    private int totalCorrect;
     private Date dateCompleted;
     private Time totalTime;
-    private Long idTest;
     private int totalQuestion;
-    private List<Long> listIdPart;
-    private List<ListChooseRequest> listChoose;
+    private List<PartResponse> partResponses;
 }
