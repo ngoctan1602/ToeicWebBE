@@ -9,12 +9,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "history")
-@Builder
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,7 +24,10 @@ public class History {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private Date dateCompleted;
+    private Time totalTime;
+    private int totalQuestion;
+    private int totalCorrect;
     @ManyToMany
     @JoinTable(name = "history_part",
             joinColumns = @JoinColumn(name = "history_id", referencedColumnName = "id"),

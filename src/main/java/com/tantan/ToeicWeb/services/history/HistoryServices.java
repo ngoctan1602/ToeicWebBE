@@ -6,16 +6,21 @@ import com.tantan.ToeicWeb.entity.*;
 import com.tantan.ToeicWeb.entity.history.History;
 import com.tantan.ToeicWeb.entity.history.SelectedList;
 import com.tantan.ToeicWeb.exception.CustomException;
+import com.tantan.ToeicWeb.mapper.HistoryMapper;
+import com.tantan.ToeicWeb.mapper.PartMapper;
 import com.tantan.ToeicWeb.repository.*;
 import com.tantan.ToeicWeb.request.history.HistoryRequest;
 import com.tantan.ToeicWeb.request.history.ListChooseRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
+import com.tantan.ToeicWeb.response.PartResponse;
+import com.tantan.ToeicWeb.response.history.HistoryResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class HistoryServices implements IHistoryServices {
@@ -37,6 +42,7 @@ public class HistoryServices implements IHistoryServices {
         this.questionRepository = questionRepository;
     }
 
+    @Transactional
     @Override
     public boolean createNewHistory(HistoryRequest historyRequest) {
         History history = createHistoryWithNoListSelected(historyRequest);
@@ -53,8 +59,21 @@ public class HistoryServices implements IHistoryServices {
         for (SelectedList selectedList : selectedLists) {
             selectedListRepository.save(selectedList);
         }
+        int totalCorrect = 0;
+        for (Part part : history.getParts()) {
+            int total = historyRepository.getTotalCorrect(
+                    history.getId(),
+                    historyRequest.getIdTest(),
+                    new GetIdUser().getId(),
+                    part.getId());
+            totalCorrect += total;
+        }
+        History updateHistory = history.toBuilder().totalCorrect(totalCorrect).build();
+        historyRepository.save(updateHistory);
         return true;
     }
+
+
 
     @Transactional
     private History createHistoryWithNoListSelected(HistoryRequest historyRequest) {
@@ -79,6 +98,45 @@ public class HistoryServices implements IHistoryServices {
             );
             parts.add(part);
         }
-        return historyRepository.save(History.builder().name(historyRequest.getName()).user(user).test(test).parts(parts).build());
+        return historyRepository.save(
+                History.builder()
+                        .totalTime(historyRequest.getTotalTime())
+                        .user(user)
+                        .test(test)
+                        .parts(parts)
+                        .dateCompleted(historyRequest.getDateCompleted())
+                        .build()
+        );
+    }
+
+    @Override
+    @Transactional
+    public List<HistoryResponse> getHistoryWithTestAndUser(Long testId) {
+
+        if (testId == null) {
+            throw new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Please input test id", null));
+        }
+        Long idUser = new GetIdUser().getId();
+        if (idUser == null) {
+            throw new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Please login", null));
+        }
+        Test test = testRepository.findById(testId).orElseThrow(
+                () -> new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Not found test with id=" + testId, null))
+        );
+        User user = userRepository.findById(idUser).orElseThrow(
+                () -> new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Not found user with id=" + idUser, null))
+        );
+        List<History> historyList = historyRepository.findByTestAndUser(test,user);
+        List<HistoryResponse> historyResponses = new ArrayList<>();
+        for (History history: historyList)
+        {
+            HistoryResponse historyResponse = HistoryMapper.INSTANCE.toDTO(history);
+            List<PartResponse> partResponses = history.getParts().stream().map(
+                    PartMapper.INSTANCE::toDTO
+            ).toList();
+            historyResponse.setPartResponses(partResponses);
+            historyResponses.add(historyResponse);
+        }
+        return historyResponses;
     }
 }
