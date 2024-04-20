@@ -153,7 +153,21 @@ public class QuestionServices implements IQuestionServices {
 //            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
 //                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
             List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
-            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO,answerResponses);
+            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO, answerResponses);
+            questionWithAnswers.add(questionWithAnswer);
+        }
+        return questionWithAnswers;
+    }
+
+    @Override
+    public Set<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest, Long idPart) {
+        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(idPart, idTest);
+        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
+        for (QuestionDTO questionDTO : questionDTOS) {
+//            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
+//                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
+            List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
+            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO, answerResponses);
             questionWithAnswers.add(questionWithAnswer);
         }
         return questionWithAnswers;

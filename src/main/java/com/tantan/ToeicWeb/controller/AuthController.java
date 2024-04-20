@@ -13,10 +13,14 @@ import com.tantan.ToeicWeb.auth.services.RefreshTokenServices;
 import com.tantan.ToeicWeb.common.GetIdUser;
 import com.tantan.ToeicWeb.entity.User;
 import com.tantan.ToeicWeb.mapper.UserMapper;
+import com.tantan.ToeicWeb.response.DataResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
@@ -37,8 +41,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok(authService.login(loginRequest));
+    public ResponseEntity<DataResponse> login(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(new DataResponse(false, HttpStatus.OK.value(),
+                "Login successfully",
+                authService.login(loginRequest)));
     }
 
     @PostMapping("/refresh")
@@ -60,4 +66,5 @@ public class AuthController {
         User user = account.getUser();
         return new UserResponse(user.getName(), account.getEmail());
     }
+
 }

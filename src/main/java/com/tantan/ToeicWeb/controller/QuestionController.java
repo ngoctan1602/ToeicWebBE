@@ -80,4 +80,17 @@ public class QuestionController {
                 new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
         );
     }
+    @GetMapping("/")
+    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestParam Long idTest,
+                                                                 @RequestParam Long idPart) {
+        Set<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(idTest, idPart);
+        if (questionWithAnswers !=null) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", questionWithAnswers)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
+        );
+    }
 }

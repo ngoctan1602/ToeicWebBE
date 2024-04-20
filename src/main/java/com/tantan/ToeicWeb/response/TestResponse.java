@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,4 +17,5 @@ public class TestResponse {
     private int totalTime;
     private String name;
     private int totalPart;
+    private List<PartResponse> partResponse;
 }

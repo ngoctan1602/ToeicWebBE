@@ -13,9 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionWithAnswer {
-//    private Long id;
-//    private String content;
-//    private String description;
     private QuestionDTO questionDTO;
     private List<AnswerResponse> answerList;
 }

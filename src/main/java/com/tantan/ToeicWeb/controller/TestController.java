@@ -39,7 +39,7 @@ public class TestController {
         );
     }
 
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    //    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/topic/year")
     public ResponseEntity<DataResponse> getTestByTopicAndYear(@RequestParam Long idTopic, @RequestParam Long idYear) {
         List<TestResponse> testResponses = iTestServices.getTestByTopicAndYear(idTopic, idYear);
@@ -52,4 +52,15 @@ public class TestController {
                 new DataResponse(false, HttpStatus.OK.value(), "Get all test with topic and year successfully", testResponses)
         );
     }
+
+    @GetMapping("")
+    public ResponseEntity<DataResponse> getTestById(@RequestParam Long idTest) {
+        TestResponse testResponses = iTestServices.getTestById(idTest);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new DataResponse(false, HttpStatus.OK.value(), "Get year by test id successfully", testResponses));
+
+    }
+
+
 }

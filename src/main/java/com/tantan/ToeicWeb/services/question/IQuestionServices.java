@@ -22,4 +22,5 @@ public interface IQuestionServices {
 
     //    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question);
     public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question);
+    public Set<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest,Long idPart);
 }

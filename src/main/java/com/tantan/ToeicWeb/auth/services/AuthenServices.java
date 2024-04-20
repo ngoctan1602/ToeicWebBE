@@ -31,13 +31,13 @@ public class AuthenServices {
     private final AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
+
     public AuthResponse register(RegisterRequest registerRequest) {
         if (StringUtils.isBlank(registerRequest.getName())) {
             throw new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Name don't null", null));
         }
         boolean b = EmailValidator.getInstance().isValid(registerRequest.getEmail());
-        if (!b)
-        {
+        if (!b) {
             throw new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Email is not valid", null));
         }
         User user = userRepository.save(User.builder().name(registerRequest.getName()).build());
@@ -61,14 +61,29 @@ public class AuthenServices {
     }
 
     public AuthResponse login(LoginRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
-        );
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        loginRequest.getEmail(),
+//                        loginRequest.getPassword()
+//                )
+//        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(),
+                            loginRequest.getPassword()
+                    )
+            );
 
-        var user = accountRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Account not found!"));
+
+        } catch (Exception ex) {
+            // Handle authentication failure
+           throw new CustomException(new DataResponse(true,HttpStatus.NOT_FOUND.value(), "Invalid email or password",null));
+        }
+        var user = accountRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
+//                () -> new UsernameNotFoundException("Account not found!")
+                () -> new CustomException(new DataResponse(true, HttpStatus.NOT_FOUND.value(), "Account not found", null))
+        );
         var accessToken = jwtService.generateToken(user);
         var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getEmail());
 
