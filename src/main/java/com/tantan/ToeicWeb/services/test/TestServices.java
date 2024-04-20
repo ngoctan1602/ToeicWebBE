@@ -2,11 +2,14 @@ package com.tantan.ToeicWeb.services.test;
 
 import com.tantan.ToeicWeb.entity.*;
 import com.tantan.ToeicWeb.exception.CustomException;
+import com.tantan.ToeicWeb.mapper.PartMapper;
 import com.tantan.ToeicWeb.mapper.TestMapper;
 import com.tantan.ToeicWeb.repository.*;
 import com.tantan.ToeicWeb.request.TestRequest;
 import com.tantan.ToeicWeb.response.DataResponse;
+import com.tantan.ToeicWeb.response.PartResponse;
 import com.tantan.ToeicWeb.response.TestResponse;
+import com.tantan.ToeicWeb.response.test.NameTestDTO;
 import io.micrometer.common.util.StringUtils;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TestServices implements ITestServices {
@@ -149,5 +153,26 @@ public class TestServices implements ITestServices {
             testResponses.add(testResponse);
         }
         return testResponses;
+    }
+
+    @Override
+    public TestResponse getTestById(Long idTest) {
+        Test test = testRepository.findById(idTest).orElseThrow(
+                () -> new CustomException(new DataResponse(
+                        true, org.springframework.http.HttpStatus.NOT_FOUND.value(),
+                        "Not found test with id= " + idTest,
+                        null
+                ))
+        );
+        TestResponse testResponse = TestMapper.INSTANCE.toDTO(test);
+        List<PartResponse> partResponse = test.getParts().stream().map(PartMapper.INSTANCE::toDTO).toList();
+        testResponse.setTotalPart(test.getParts().size());
+        testResponse.setPartResponse(partResponse);
+        return testResponse;
+    }
+
+    @Override
+    public NameTestDTO getNameTestById(Long idTest) {
+        return testRepository.getNameTestById(idTest);
     }
 }
