@@ -7,6 +7,7 @@ import com.tantan.ToeicWeb.request.QuestionByTestRequest;
 import com.tantan.ToeicWeb.request.QuestionRequest;
 import com.tantan.ToeicWeb.response.question.QuestionByPart;
 import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswerParagraph;
 
 import java.util.List;
 import java.util.Set;
@@ -21,6 +22,8 @@ public interface IQuestionServices {
     public List<Question> getQuestionByParagraph(Paragraph paragraph);
 
     //    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question);
-    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question);
-    public Set<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest,Long idPart);
+//    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question);
+    public List<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest,Long idPart);
+
+    public  List<QuestionWithAnswerParagraph> getQuestionByTestAndPartAndParagraph(Long idTest, Long idPart);
 }

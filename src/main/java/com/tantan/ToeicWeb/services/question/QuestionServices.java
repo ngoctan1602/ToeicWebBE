@@ -8,9 +8,11 @@ import com.tantan.ToeicWeb.repository.*;
 import com.tantan.ToeicWeb.request.*;
 import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.answer.AnswerResponse;
+import com.tantan.ToeicWeb.response.paragraph.ParagraphByTestAndPart;
 import com.tantan.ToeicWeb.response.question.QuestionByPart;
 import com.tantan.ToeicWeb.response.question.QuestionDTO;
 import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswerParagraph;
 import com.tantan.ToeicWeb.services.image.ICloudServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -145,10 +147,32 @@ public class QuestionServices implements IQuestionServices {
         return questions;
     }
 
+//    @Override
+//    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question) {
+//        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(question.getIdPart(), question.getIdTest());
+//        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
+//        for (QuestionDTO questionDTO : questionDTOS) {
+////            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
+////                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
+//            List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
+//            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO, answerResponses);
+//            questionWithAnswers.add(questionWithAnswer);
+//        }
+//        return questionWithAnswers;
+//    }
+
     @Override
-    public Set<QuestionWithAnswer> getQuestionByTestAndPart(QuestionByTestRequest question) {
-        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(question.getIdPart(), question.getIdTest());
-        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
+    public List<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest, Long idPart) {
+        Test test = testRepository.findById(idTest).orElse(null);
+        if (test == null) {
+            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with id = " + idTest, null));
+        }
+        Part part = partRepository.findById(idPart).orElse(null);
+        if (part == null) {
+            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found part with id = " + idPart, null));
+        }
+        List<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(idPart, idTest);
+        List<QuestionWithAnswer> questionWithAnswers = new ArrayList<>();
         for (QuestionDTO questionDTO : questionDTOS) {
 //            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
 //                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
@@ -160,17 +184,35 @@ public class QuestionServices implements IQuestionServices {
     }
 
     @Override
-    public Set<QuestionWithAnswer> getQuestionByTestAndPart(Long idTest, Long idPart) {
-        Set<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndPart(idPart, idTest);
-        Set<QuestionWithAnswer> questionWithAnswers = new HashSet<>();
-        for (QuestionDTO questionDTO : questionDTOS) {
-//            List<AnswerResponse> answerResponses = answerRepository.findById(questionDTO.getId())
-//                    .stream().map(AnswerMapper.INSTANCE::toAnswerResponse).collect(Collectors.toList());
-            List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
-            QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO, answerResponses);
-            questionWithAnswers.add(questionWithAnswer);
+    public  List<QuestionWithAnswerParagraph> getQuestionByTestAndPartAndParagraph(Long idTest, Long idPart) {
+        Test test = testRepository.findById(idTest).orElse(null);
+        if (test == null) {
+            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found test with id = " + idTest, null));
         }
-        return questionWithAnswers;
+        Part part = partRepository.findById(idPart).orElse(null);
+        if (part == null) {
+            throw new CustomException(new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found part with id = " + idPart, null));
+        }
+        List<ParagraphByTestAndPart> paragraphs = paragraphRepository.getParagraphByTestAndPart(idPart, idTest);
+        List<QuestionWithAnswerParagraph> questionWithAnswerParagraphs = new ArrayList<>();
+        for (ParagraphByTestAndPart paragraph : paragraphs) {
+            List<QuestionDTO> questionDTOS = questionRepository.getQuestionByIdTestAndIdPartAndIdParagraph(idPart, paragraph.getId(), idTest);
+            List<QuestionWithAnswer> questionWithAnswers = new ArrayList<>();
+            for (QuestionDTO questionDTO : questionDTOS) {
+                List<AnswerResponse> answerResponses = answerRepository.getAnswerWithIdQuestion(questionDTO.getId());
+                QuestionWithAnswer questionWithAnswer = new QuestionWithAnswer(questionDTO, answerResponses);
+                questionWithAnswers.add(questionWithAnswer);
+            }
+            QuestionWithAnswerParagraph question = QuestionWithAnswerParagraph.builder()
+                    .id(paragraph.getId())
+                    .audio(paragraph.getAudio())
+                    .content(paragraph.getContent())
+                    .img(paragraph.getImg())
+                    .questionWithAnswerList(questionWithAnswers)
+                    .build();
+            questionWithAnswerParagraphs.add(question);
+        }
+        return questionWithAnswerParagraphs;
     }
 
 //    @Override

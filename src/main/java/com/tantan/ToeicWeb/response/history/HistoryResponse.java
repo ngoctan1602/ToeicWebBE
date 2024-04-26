@@ -20,5 +20,6 @@ public class HistoryResponse {
     private Date dateCompleted;
     private Time totalTime;
     private int totalQuestion;
+    private String name;
     private List<PartResponse> partResponses;
 }
