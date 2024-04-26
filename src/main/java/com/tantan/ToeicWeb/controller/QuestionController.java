@@ -7,6 +7,7 @@ import com.tantan.ToeicWeb.response.DataResponse;
 import com.tantan.ToeicWeb.response.ParagraphResponse;
 import com.tantan.ToeicWeb.response.question.QuestionByPart;
 import com.tantan.ToeicWeb.response.question.QuestionWithAnswer;
+import com.tantan.ToeicWeb.response.question.QuestionWithAnswerParagraph;
 import com.tantan.ToeicWeb.services.paragraph.IParagraphServices;
 import com.tantan.ToeicWeb.services.question.IQuestionServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,22 +57,35 @@ public class QuestionController {
     }
 
     @GetMapping("/getByPartAndType")
-    public ResponseEntity<DataResponse> getByIdPartAndIdType(@RequestParam Long idPart,@RequestParam Long idType) {
-        List<ParagraphResponse> paragraphResponses = iParagraphServices.getAllQuestionByPartAndType(idPart,idType);
+    public ResponseEntity<DataResponse> getByIdPartAndIdType(@RequestParam Long idPart, @RequestParam Long idType) {
+        List<ParagraphResponse> paragraphResponses = iParagraphServices.getAllQuestionByPartAndType(idPart, idType);
         if (!paragraphResponses.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", paragraphResponses)
             );
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is "+ idPart +" and Type id is" + idType, null)
+                new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is " + idPart + " and Type id is" + idType, null)
         );
     }
 
-    @GetMapping("/test/part")
-    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestBody QuestionByTestRequest question) {
-        Set<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(question);
-        if (questionWithAnswers !=null) {
+    //    @GetMapping("/test/part")
+//    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestBody QuestionByTestRequest question) {
+//        Set<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(question);
+//        if (questionWithAnswers !=null) {
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", questionWithAnswers)
+//            );
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
+//        );
+//    }
+    @GetMapping("/")
+    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestParam Long idTest,
+                                                                 @RequestParam Long idPart) {
+        List<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(idTest, idPart);
+        if (questionWithAnswers != null) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", questionWithAnswers)
             );
@@ -80,11 +94,13 @@ public class QuestionController {
                 new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
         );
     }
-    @GetMapping("/")
-    public ResponseEntity<DataResponse> getQuestionByTestAndPart(@RequestParam Long idTest,
-                                                                 @RequestParam Long idPart) {
-        Set<QuestionWithAnswer> questionWithAnswers = iQuestionServices.getQuestionByTestAndPart(idTest, idPart);
-        if (questionWithAnswers !=null) {
+
+    @GetMapping("/paragraph")
+    public ResponseEntity<DataResponse>  getQuestionByTestAndPartAndParagraph
+            (@RequestParam Long idTest,
+             @RequestParam Long idPart) {
+        List<QuestionWithAnswerParagraph> questionWithAnswers = iQuestionServices.getQuestionByTestAndPartAndParagraph(idTest, idPart);
+        if (!questionWithAnswers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new DataResponse(false, HttpStatus.OK.value(), "Get all successfully", questionWithAnswers)
             );
@@ -92,5 +108,6 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.OK).body(
                 new DataResponse(false, HttpStatus.NOT_FOUND.value(), "Not found question by with Part id is ", null)
         );
+//        return iQuestionServices.getQuestionByTestAndPartAndParagraph(idTest, idPart);
     }
 }

@@ -1,18 +1,18 @@
 package com.tantan.ToeicWeb.response.question;
 
 import com.tantan.ToeicWeb.response.answer.AnswerResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
-@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionWithAnswer {
-    private QuestionDTO questionDTO;
-    private List<AnswerResponse> answerList;
+public class QuestionWithAnswerParagraph {
+    private Long id;
+    private String content;
+    private String audio;
+    private String img;
+   private List<QuestionWithAnswer> questionWithAnswerList;
 }
